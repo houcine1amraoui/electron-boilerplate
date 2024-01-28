@@ -1,6 +1,6 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
-
+const si = require("systeminformation");
 const createWindows = () => {
   const mainWin = new BrowserWindow({
     width: 500,
@@ -22,6 +22,6 @@ require("electron-reload")(__dirname, {
 });
 
 app.whenReady().then(() => {
-  //   ipcMain.handle("notify", (message) => console.log(message));
+  ipcMain.handle("baseBoard", () => si.baseboard());
   createWindows();
 });
