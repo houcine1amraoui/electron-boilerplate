@@ -1,10 +1,12 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 const api = {
-  node: () => process.versions.node,
-  chrome: () => process.versions.chrome,
-  electron: () => process.versions.electron,
   baseBoard: () => ipcRenderer.invoke("baseBoard"),
+  cpu: () => ipcRenderer.invoke("cpu"),
+  memory: () => ipcRenderer.invoke("memory"),
+  fetchDevice: (deviceId) => ipcRenderer.invoke("fetchDevice", deviceId),
+  fetchMainServicesList: () => ipcRenderer.invoke("fetchMainServicesList"),
+  fetchSubServicesList: () => ipcRenderer.invoke("fetchSubServicesList"),
 };
 
 contextBridge.exposeInMainWorld("api", api);

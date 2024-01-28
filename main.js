@@ -8,8 +8,7 @@ const createWindows = () => {
     autoHideMenuBar: false,
     frame: true,
     webPreferences: {
-      //   nodeIntegration: false,
-      //   contextIsolation: false,
+      contextIsolation: true,
       preload: path.join(__dirname, "preload.js"),
     },
   });
@@ -21,7 +20,39 @@ require("electron-reload")(__dirname, {
   electron: path.join(__dirname, "node_modules", ".bin", "electron"),
 });
 
+const fetchDevice = async (deviceId) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:8080/devices/?id=${deviceId}`
+    );
+    return response.data;
+  } catch (error) {}
+};
+
+const fetchMainServicesList = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8080/services/mains/list"
+    );
+    return response.data;
+  } catch (error) {}
+};
+
+const fetchSubServicesList = async () => {
+  try {
+    const response = await axios.get(
+      "http://localhost:8080/services/subs/list"
+    );
+    return response.data;
+  } catch (error) {}
+};
+
 app.whenReady().then(() => {
   ipcMain.handle("baseBoard", () => si.baseboard());
+  ipcMain.handle("cpu", () => si.cpu());
+  ipcMain.handle("memory", () => si.mem());
+  ipcMain.handle("fetchDevice", (_, deviceId) => fetchDevice(deviceId));
+  ipcMain.handle("fetchMainServicesList", () => fetchMainServicesList());
+  ipcMain.handle("fetchSubServicesList", () => fetchSubServicesList());
   createWindows();
 });
